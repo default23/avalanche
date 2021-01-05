@@ -4,6 +4,8 @@ import (
 	"errors"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+
+	"github.com/sirupsen/logrus"
 )
 
 const defaultAddr = ":3128"
@@ -37,12 +39,14 @@ func (c *Config) valid() error {
 		for _, f := range []string{c.SSL.KeyPath, c.SSL.PemPath} {
 			_, err := ioutil.ReadFile(f)
 			if err != nil {
+				logrus.Errorf("unable to read the cert file from '%s': %s", f, err)
 				return ErrSSLCertRequired
 			}
 		}
 	}
 
 	if c.Server.Addr == "" {
+		logrus.Warnf("server address is not specified, '%s' will be used as default", defaultAddr)
 		c.Server.Addr = defaultAddr
 	}
 
