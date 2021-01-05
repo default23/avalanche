@@ -1,0 +1,8 @@
+server:
+  addr: ':8080'
+ssl:
+  # if enabled, pem/key is required for HTTPS
+  # else server will use HTTP proto
+  enable: true
+  pem: '/Users/default23/Downloads/certs/server.pem'
+  key: '/Users/default23/Downloads/certs/server.key'
