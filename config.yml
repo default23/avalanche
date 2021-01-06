@@ -3,6 +3,6 @@ server:
 ssl:
   # if enabled, pem/key is required for HTTPS
   # else server will use HTTP proto
-  enable: true
+  enabled: false
   pem: '/Users/default23/Downloads/certs/server.pem'
   key: '/Users/default23/Downloads/certs/server.key'
