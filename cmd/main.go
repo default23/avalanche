@@ -13,12 +13,6 @@ var (
 )
 
 func init() {
-	f := new(logrus.TextFormatter)
-	f.FullTimestamp = true
-	f.TimestampFormat = "02.01.2006 15:04:05"
-
-	logrus.SetFormatter(f)
-
 	flag.StringVar(&configPath, "config", "", "path to configuration file")
 	flag.Parse()
 }
