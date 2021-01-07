@@ -6,3 +6,14 @@ ssl:
   enabled: false
   pem: '/Users/default23/Downloads/certs/server.pem'
   key: '/Users/default23/Downloads/certs/server.key'
+proxy:
+  logging: true
+  authorization:
+    # if authorization enabled, unauthorized users
+    # will receive 401 (Unauthorized) status on each request
+    enabled: true
+    # htpasswd format file
+    # example: htpasswd -c ./allowed_users admin
+    # supported password hashes is APR, SHA, bcrypt
+    # recommended to use bcrypt
+    passwdfile: './allowed_users'

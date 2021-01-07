@@ -12,7 +12,7 @@ import (
 	"github.com/default23/avalanche/config"
 )
 
-func TestRead(t *testing.T) {
+func Test_Read(t *testing.T) {
 	type Suite struct {
 		name       string
 		path       string
@@ -143,6 +143,48 @@ func TestRead(t *testing.T) {
 			wantErr: config.ErrSSLCertRequired,
 		},
 		{
+			name: "error_passwd_path_empty",
+			path: "conf.yaml",
+			setup: func(tt Suite) {
+				c := &config.Config{
+					Proxy: config.Proxy{
+						Authorization: config.Authorization{
+							Enabled:  true,
+							AuthPath: "",
+						},
+					},
+				}
+
+				yamlConf, err := yaml.Marshal(c)
+				assert.NoError(t, err)
+
+				err = ioutil.WriteFile(tt.path, yamlConf, os.ModePerm)
+				assert.NoError(t, err)
+			},
+			wantErr: config.ErrCredentialsNotSet,
+		},
+		{
+			name: "error_passwd_path_invalid",
+			path: "conf.yaml",
+			setup: func(tt Suite) {
+				c := &config.Config{
+					Proxy: config.Proxy{
+						Authorization: config.Authorization{
+							Enabled:  true,
+							AuthPath: "/etc/9ff87c10-06b9-40e9-b368-d7b67a67939b.yaml",
+						},
+					},
+				}
+
+				yamlConf, err := yaml.Marshal(c)
+				assert.NoError(t, err)
+
+				err = ioutil.WriteFile(tt.path, yamlConf, os.ModePerm)
+				assert.NoError(t, err)
+			},
+			wantErr: config.ErrCredentialsNotSet,
+		},
+		{
 			name: "success",
 			path: "conf.yaml",
 			setup: func(tt Suite) {
@@ -232,4 +274,11 @@ func TestRead(t *testing.T) {
 			_ = os.Remove(tt.path)
 		})
 	}
+}
+
+func Test_Default(t *testing.T) {
+	conf := config.Default()
+	wantConfig := &config.Config{Server: config.Server{Addr: ":3128"}}
+
+	assert.Equal(t, wantConfig, conf)
 }
