@@ -4,7 +4,9 @@ import (
 	"flag"
 	"net/http"
 
+	_clientRepo "github.com/default23/avalanche/client/repository/fs"
 	"github.com/default23/avalanche/config"
+	"github.com/default23/avalanche/domain"
 	"github.com/default23/avalanche/logging"
 	"github.com/default23/avalanche/proxy"
 )
@@ -39,7 +41,12 @@ func main() {
 	logger.Info("successfully parsed app configuration")
 	logger.Info("instantiating the proxy service")
 
-	handler := proxy.Configure(true, logger)
+	var clientRepo domain.ClientRepository
+	if cfg.Proxy.Authorization.Enabled {
+		clientRepo = _clientRepo.NewClientRepository(cfg.Proxy.Authorization.AuthPath)
+	}
+
+	handler := proxy.Configure(cfg.Proxy, clientRepo, logger)
 
 	if cfg.SSL.Enabled {
 		logger.Infof("starting the TLS server, available at %s", cfg.Server.Addr)
